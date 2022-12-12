@@ -24,7 +24,6 @@ function create_last_dat() {
 function update_last_dat() {
         local thread=$(git rev-parse --abbrev-ref HEAD)
 
-	echo "name is ${thread}"
         if [[ -f "${thread}.dat" ]]; then
                 append_last_dat
         else
@@ -35,17 +34,15 @@ function update_last_dat() {
 op=$1
 message=$2
 
-update_last_dat
-
 case $op in
 	"r" | "response" )
-		git add -A && git commit -m "$message" ;;
+		update_last_dat && git add -A && git commit -m "$message" ;;
 	"b" | "boards" )
 		git fetch && git branch -a ;;
 	"c" | "create" )
 		git checkout -b $2 ;;
 	"p" | "post" )
-		git checkout -b $2 && git commit -m "$3" ;;
+		update_last_dat && git checkout -b $2 && git commit -m "$3" ;;
 	"s" | "show" )
 		git checkout $2 && git pull && git log ;;
 esac
