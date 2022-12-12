@@ -1,35 +1,34 @@
 #!/bin/bash
 
-function get_thread_name() {
-        return $(git rev-parse --abbrev-ref HEAD)
-}
-
 function append_last_dat() {
         local SEP="<>"
 
         local name=$(git log -1 --format=%cn)
-        local email=$(git log -1 --format=%ce)
+        # local email= $(git log -1 --format=%ce)
+        local email=
         local timestamp=$(git log -1 --format=%cd)
         local response=$(git log -1 --format=%s)
-        local thread=$1
+        local thread=$(git rev-parse --abbrev-ref HEAD)
+        local title=$1
 
-        dat_line="${name}${SEP}${email}${SEP}${timestamp}${SEP}${response}${SEP}${thread}"
-        echo $dat_line >> "${title}.dat"
+        dat_line="${name}${SEP}${email}${SEP}${timestamp}${SEP}${response}${SEP}${title}"
+        echo $dat_line >> "${thread}.dat"
 }
 
 function create_last_dat() {
-        local thread=$1
+        local title=$1
 
         touch "${title}.dat" && append_dat "$title"
 }
 
 function update_last_dat() {
-        local thread=$(get_thread_name)
+        local thread=$(git rev-parse --abbrev-ref HEAD)
 
+	echo "name is ${thread}"
         if [[ -f "${thread}.dat" ]]; then
                 append_last_dat
         else
-                create_last_dat thread
+                create_last_dat "$thread"
         fi
 }
 
@@ -50,4 +49,3 @@ case $op in
 	"s" | "show" )
 		git checkout $2 && git pull && git log ;;
 esac
-
