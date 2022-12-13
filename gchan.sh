@@ -32,17 +32,16 @@ function update_last_dat() {
 }
 
 op=$1
-message=$2
 
 case $op in
 	"r" | "response" )
-		update_last_dat && git add -A && git commit -m "$message" ;;
+		update_last_dat && git add -A && git commit -m "$2" ;;
 	"b" | "boards" )
 		git fetch && git branch -a ;;
 	"c" | "create" )
-		git checkout -b $2 ;;
+		git checkout -b "$2" ;;
 	"p" | "post" )
-		update_last_dat && git checkout -b $2 && git commit -m "$3" ;;
+		update_last_dat && (git checkout -b "$2" || git checkout "$2") && git add -A && git commit -m "$3" ;;
 	"s" | "show" )
-		git checkout $2 && git pull && git log ;;
+		git checkout "$2" && git pull; git log --reverse --first-parent "$2" ;;
 esac
