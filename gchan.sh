@@ -18,7 +18,7 @@ function append_last_dat() {
 function create_last_dat() {
         local title=$1
 
-        touch "${title}.dat" && append_dat "$title"
+        touch "${title}.dat" && append_last_dat "$title"
 }
 
 function update_last_dat() {
